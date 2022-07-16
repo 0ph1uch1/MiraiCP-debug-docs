@@ -63,6 +63,9 @@ add_library(Loader
         ${LOADER_PATH}
         ${MIRAICP_COMMON_PATH}
         )
+set_target_properties(Loader PROPERTIES
+        PREFIX lib
+        OUTPUT_NAME Loader)
 target_include_directories(Loader PUBLIC
         ${JNI_PATH}
         ${3RD_PATH}

@@ -1,6 +1,7 @@
 # self defined
 build/
 cmake*/
+src/
 .clang-format
 
 # Prerequisites
