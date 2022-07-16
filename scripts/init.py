@@ -60,8 +60,13 @@ def main():
 
     # download
     print(f"Downloading version {versionTag}")
-    urllib.request.urlretrieve(
-        f"https://github.com/Nambers/MiraiCP/archive/refs/tags/{get_download_version(versionTag)}.zip", "MiraiCP.zip")
+    try:
+        urllib.request.urlretrieve(
+            f"https://github.com/Nambers/MiraiCP/archive/refs/tags/{get_download_version(versionTag)}.zip", "MiraiCP.zip")
+    except Exception:
+        try_remove_file("MiraiCP.zip")
+        urllib.request.urlretrieve(
+            f"https://ghproxy.com/https://github.com/Nambers/MiraiCP/archive/refs/tags/{get_download_version(versionTag)}.zip", "MiraiCP.zip")
 
     # extract
     try_remove_tree(f"MiraiCP-{get_version_in_foldername(versionTag)}")
@@ -115,5 +120,5 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        print("init failed, please check your working directory: is it MiraiCP-debug-docs?")
+        print("初始化失败，如果遇到路径问题，请检查工作目录是否是: MiraiCP-debug-docs")
         raise e
