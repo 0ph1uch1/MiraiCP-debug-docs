@@ -96,12 +96,13 @@ def main():
         else:
             readpipe_win32(["cmake", "-B", "build", "."])
             readpipe_win32(["cmake", "--build", "build"])
+        
+        print("编译完成。")
 
 
 if __name__ == '__main__':
     try:
         main()
-        # readpipe_win32(["cmake", "--build", "build"])
     except Exception as e:
         print("init failed, please check your working directory: is it MiraiCP-debug-docs?")
         raise e
