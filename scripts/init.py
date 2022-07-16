@@ -39,13 +39,16 @@ def get_download_version(ver: str) -> str:
 def get_version_in_foldername(ver: str) -> str:
     return ver[1:] if ver[0] == 'v' else ver
 
-def readpipe_win32(command:List[str]):
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='gbk')
+
+def readpipe_win32(command: List[str]):
+    p = subprocess.Popen(command, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT, encoding='gbk')
     while True:
         retcode = p.poll()
         print(p.stdout.readline())
         if retcode is not None:
             break
+
 
 def main():
     if len(sys.argv) < 2:
@@ -59,7 +62,7 @@ def main():
     print(f"Downloading version {versionTag}")
     urllib.request.urlretrieve(
         f"https://github.com/Nambers/MiraiCP/archive/refs/tags/{get_download_version(versionTag)}.zip", "MiraiCP.zip")
-    
+
     # extract
     try_remove_tree(f"MiraiCP-{get_version_in_foldername(versionTag)}")
     zipfile.ZipFile("MiraiCP.zip").extractall()
@@ -79,24 +82,32 @@ def main():
     # copy .clang-format
     try_remove_file(".clang-format")
     shutil.copy("MiraiCP/cpp/.clang-format", ".clang-format")
-    
+
     # remove unnecessary files
     shutil.rmtree("MiraiCP")
     try_remove_tree("src/miraicp-core")
     try_remove_tree("src/examples")
     try_remove_tree("src/single_include")
-    
+
+    # create build
+    try_remove_tree("build")
+    os.mkdir("build")
+    if sys.platform != "win32":
+        subprocess.check_output(
+            ["cd build && cmake .."], shell=True, encoding='utf-8')
+    else:
+        readpipe_win32(["cmake", "-B", "build", "."])
+
+    print("CMake项目生成完成。")
+
     # compile
     if compile:
-        try_remove_tree("build")
-        os.mkdir("build")
         if sys.platform != 'win32':
             subprocess.check_output(
-                ["cd build && cmake .. && make"], shell=True, encoding='utf-8')
+                ["cd build && make"], shell=True, encoding='utf-8')
         else:
-            readpipe_win32(["cmake", "-B", "build", "."])
             readpipe_win32(["cmake", "--build", "build"])
-        
+
         print("编译完成。")
 
 
