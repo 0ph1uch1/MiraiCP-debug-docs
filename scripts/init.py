@@ -120,5 +120,5 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        print("初始化失败，如果遇到路径问题，请检查工作目录是否是: MiraiCP-debug-docs")
+        print("初始化失败，如果遇到路径问题，请检查工作目录是否是: MiraiCP-debug-docs？如果文件夹创建失败，请检查您的IDE是否已经关闭（仅限Windows）")
         raise e
