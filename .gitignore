@@ -1,6 +1,8 @@
 # self defined
+.vs/
+.idea/
 build/
-cmake*/
+cmake-build-*/
 src/
 .vscode/
 .clang-format

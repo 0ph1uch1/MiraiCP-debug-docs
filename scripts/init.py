@@ -17,6 +17,7 @@ import urllib.request
 import zipfile
 from typing import List
 
+DEFAULT_VERSION_TAG = "v2.12.0-RC2"
 
 def try_remove_file(file: str):
     try:
@@ -28,9 +29,16 @@ def try_remove_file(file: str):
 def try_remove_tree(tree: str):
     try:
         shutil.rmtree(tree)
+    except PermissionError as e:
+        raise e
     except Exception:
         ...
 
+def try_mkdir(dir:str):
+    try:
+        os.mkdir(dir)
+    except Exception:
+        ...
 
 def get_download_version(ver: str) -> str:
     return ver if ver[0] == 'v' else 'v'+ver
@@ -52,7 +60,7 @@ def readpipe_win32(command: List[str]):
 
 def main():
     if len(sys.argv) < 2:
-        versionTag = "v2.12.0-RC"
+        versionTag = DEFAULT_VERSION_TAG
     else:
         versionTag = sys.argv[1]
 
@@ -95,8 +103,7 @@ def main():
     try_remove_tree("src/single_include")
 
     # create build
-    try_remove_tree("build")
-    os.mkdir("build")
+    try_mkdir("build")
     if sys.platform != "win32":
         subprocess.check_output(
             ["cd build && cmake .."], shell=True, encoding='utf-8')
@@ -120,5 +127,5 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        print("初始化失败，如果遇到路径问题，请检查工作目录是否是: MiraiCP-debug-docs？如果文件夹创建失败，请检查您的IDE是否已经关闭（仅限Windows）")
+        print("初始化失败，如果遇到路径问题，请检查工作目录是否是: MiraiCP-debug-docs？\n如果文件夹创建失败，请检查您的IDE是否已经关闭（仅限Windows）")
         raise e
