@@ -17,7 +17,7 @@ import urllib.request
 import zipfile
 from typing import List
 
-DEFAULT_VERSION_TAG = "v2.12.0-RC2"
+DEFAULT_VERSION_TAG = "v2.13.0-alpha-3"
 
 def try_remove_file(file: str):
     try:
