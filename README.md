@@ -31,9 +31,17 @@ MiraiCP的debug模板以及文档。
 
 * 将全部的插件代码放入`./src/plugin/`目录下，记得删除里面原有的`test.cpp`。
 
-## 如何调试
+## 如何使用IDE调试
 
 > 调试开始时会发生多次内存访问异常。这是因为jvm在进行垃圾回收，如果Visual Studio显示“帧不在模块中”，Clion显示disassembly代码，即可继续运行，忽略掉这个异常。不建议取消勾选“引发此异常类型时中断”，这可能会导致MiraiCP本体出现异常时不中断。直接点击“继续”即可。
+>
+> 使用gdb调试时的一个（不太聪明，但好用的）解决方案：在家目录下创建`.gdbinit`文件，写入一行
+>
+> ```
+> handle SIGSEGV noprint nostop pass
+> ```
+>
+> 即可阻止所有的SIGSEGV。但这可能导致MiraiCP或插件造成的SIGSEGV被忽略。当出现这种情况时，用`#`注释掉上述内容即可。注意，这样做的话其他程序被调试时SIGSEGV也会被忽略，最好调试结束之后注释掉它。
 
 ### Visual Studio
 
@@ -51,14 +59,10 @@ MiraiCP的debug模板以及文档。
 
 CLion读取CMakeLists.txt较为方便，可以在Linux和Windows平台下使用，不需要上一个步骤中的build文件夹。
 
-> 推荐在工具链中切换至MSVC运行，CLion + MSVC编译时，jvm的内存访问异常将被压制。
+> 推荐Windows系统下工具链切换至MSVC，CLion + MSVC（LLDB）调试时，jvm的内存访问异常将被压制。
 
 * 以文件夹形式打开`MiraiCP-debug-docs`。
 * 运行->编辑配置->Loader，可执行文件输入java的可执行文件完整路径，实参输入`-jar MiraiCP-loader-<version>.jar`，工作目录修改为与上述jar所在的目录相同。该步骤与Visual Studio中步骤类似。
 * 按照启动MiraiCP同样的方法，填好配置文件、`device.json`等信息。注意，默认生成的插件dll文件名为`libMyMiraiCPPlugin.dll`，`config.json`中请确认路径正确。如果需要修改生成的文件名，请在 解决方案资源管理器->MiraiCP_plugin右键->属性->配置属性->常规->目标文件名修改。该步骤与Visual Studio中步骤完全相同。
 
 * 调试Loader。
-
-### 其他调试工具
-
-请仿照上述VS或CLion的说明自行配置。
