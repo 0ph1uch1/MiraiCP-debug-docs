@@ -13,7 +13,7 @@ endif ()
 if (MSVC)
     message("MSVC detected")
     # 以utf8编译, for msvc; EHa参数启用标准 C++ stack unwinding; 启用多线程编译；禁止无返回值的函数；禁用两个与dll export相关的warning
-    add_compile_options(/W4 /utf-8 /EHa /std:c++17 /MP /we4715 /wd4251 /wd4275 /Zc:__cplusplus)
+    add_compile_options(/W4 /EHa /std:c++17 /MP /we4715 /wd4251 /wd4275 /Zc:__cplusplus)
 else ()
     # 禁止无返回值的函数
     add_compile_options(-Wall -Werror=return-type)
@@ -25,23 +25,24 @@ endif ()
 add_compile_definitions(JSON_HAS_CPP_17 JSON_MultipleHeaders=ON)
 
 if (MSVC)
-    add_compile_options(/utf-8 /EHa /MP)
+    add_compile_options(/EHs /MP)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Debug)
 endif ()
 
 set(SRC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-file(GLOB MIRAICP_CPP_PATH ${SRC_PATH}/include/*.cpp)
+file(GLOB MIRAICP_CPP_PATH ${SRC_PATH}/sdk/*.cpp)
 file(GLOB MIRAICP_COMMON_PATH ${SRC_PATH}/common/*.cpp)
 file(GLOB LOADER_PATH ${SRC_PATH}/libloader/*.cpp)
 file(GLOB_RECURSE PLUGIN_PATH ${SRC_PATH}/plugin/*.cpp)
+file(GLOB INCLUDE_PATH ${CMAKE_SOURCE_DIR}/include)
 set(
         3RD_PATH
-        ${SRC_PATH}/3rd_include/
-        ${SRC_PATH}/3rd_include/json
-        ${SRC_PATH}/3rd_include/json/nlohmann
-        ${SRC_PATH}/3rd_include/utf8
-        ${SRC_PATH}/3rd_include/utf8/utf8
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rd_include/
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rd_include/json
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rd_include/json/nlohmann
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rd_include/utf8
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rd_include/utf8/utf8
 )
 
 # -- jni required --
@@ -75,8 +76,8 @@ set_target_properties(
 )
 target_include_directories(
         MiraiCP_plugin PUBLIC
-        ${SRC_PATH}/include
-        ${SRC_PATH}/common
+        ${INCLUDE_PATH}/sdk
+        ${INCLUDE_PATH}/common
         ${3RD_PATH}
 )
 target_compile_definitions(MiraiCP_plugin PUBLIC MIRAICP_LIB_SDK)
@@ -99,13 +100,16 @@ target_include_directories(
         Loader PUBLIC
         ${JNI_PATH}
         ${3RD_PATH}
-        ${SRC_PATH}/libloader
-        ${SRC_PATH}/common
-        ${SRC_PATH}
+        ${INCLUDE_PATH}/libloader
+        ${INCLUDE_PATH}/common
 )
 
 add_dependencies(Loader MiraiCP_plugin)
 target_compile_definitions(Loader PUBLIC MIRAICP_LIB_LOADER)
+if (MSVC)
+    target_compile_options(Loader PUBLIC /utf8 /EHs /MP)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Debug)
+endif ()
 
 # 移植性
 set_target_properties(Loader PROPERTIES LINK_SEARCH_START_STATIC 1)

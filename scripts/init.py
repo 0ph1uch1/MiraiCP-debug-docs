@@ -17,7 +17,8 @@ import urllib.request
 import zipfile
 from typing import List
 
-DEFAULT_VERSION_TAG = "v2.13.0-alpha-3"
+DEFAULT_VERSION_TAG = "v2.13.1"
+
 
 def try_remove_file(file: str):
     try:
@@ -34,11 +35,13 @@ def try_remove_tree(tree: str):
     except Exception:
         ...
 
-def try_mkdir(dir:str):
+
+def try_mkdir(dir: str):
     try:
         os.mkdir(dir)
     except Exception:
         ...
+
 
 def get_download_version(ver: str) -> str:
     return ver if ver[0] == 'v' else 'v'+ver
@@ -86,7 +89,11 @@ def main():
 
     # copy necessary files
     try_remove_tree("src")
-    shutil.copytree("MiraiCP/cpp/src", f"src")
+    shutil.copytree("MiraiCP/cpp/src", "src")
+    try_remove_tree("include")
+    shutil.copytree("MiraiCP/cpp/include", "include")
+    try_remove_tree("3rd_include")
+    shutil.copytree("MiraiCP/cpp/3rd_include", "3rd_include")
 
     # create test cpp
     os.mkdir("src/plugin")
