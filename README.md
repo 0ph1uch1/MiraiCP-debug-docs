@@ -5,6 +5,10 @@ MiraiCP的debug模板以及文档。
 
 文档可能能为您debug MiraiCP提供一些帮助。
 
+## CHANGELOG
+
+* v2.14.0：windows上编译可能需要在`MiraiCPNewThread.cpp`引入额外的标头`sstream`
+
 ## 如何使用
 
 * clone该仓库。

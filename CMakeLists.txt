@@ -78,6 +78,8 @@ target_include_directories(
         MiraiCP_plugin PUBLIC
         ${INCLUDE_PATH}/sdk
         ${INCLUDE_PATH}/common
+        ${SRC_PATH}/common
+        ${SRC_PATH}/sdk
         ${3RD_PATH}
 )
 target_compile_definitions(MiraiCP_plugin PUBLIC MIRAICP_LIB_SDK)
@@ -102,6 +104,8 @@ target_include_directories(
         ${3RD_PATH}
         ${INCLUDE_PATH}/libloader
         ${INCLUDE_PATH}/common
+        ${SRC_PATH}/common
+        ${SRC_PATH}/libloader
 )
 
 add_dependencies(Loader MiraiCP_plugin)
